@@ -1,5 +1,6 @@
 # Weather-App
-Usage: `python app.py api_key [language]`
+How to use:
+1. `pip install -r requirements.txt`
+2. `python app.py api_key`
 
-- `api_key` - API key that can be generated at https://developer.accuweather.com/
-- `language` - language of the displayed fetched weather information, e.g. en-us, pl
+`api_key` - API key generated at https://developer.accuweather.com/
