@@ -15,10 +15,9 @@ import forecast_options
 
 
 class View(QMainWindow):
-    def __init__(self, api_key):
+    def __init__(self, view_model: ViewModel):
         super().__init__()
-        self.api_key = api_key
-        self.view_model = ViewModel(api_key)
+        self.view_model = view_model
         self.initUI()
 
     def initUI(self):

@@ -4,8 +4,8 @@ from datetime import datetime
 
 
 class ViewModel:
-    def __init__(self, api_key):
-        self.model = Model(api_key)
+    def __init__(self, model: Model):
+        self.model = model
 
     def fetch_weather_conditions(self, city, forecast_option):
         self.model.fetch_weather_conditions(city, forecast_option)

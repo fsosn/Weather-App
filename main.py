@@ -1,6 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication
 from view import View
+from model import Model
+from viewmodel import ViewModel
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or len(sys.argv[1]) == 0:
@@ -10,6 +12,9 @@ if __name__ == "__main__":
     api_key = sys.argv[1]
 
     app = QApplication(sys.argv)
-    weather_app = View(api_key)
-    weather_app.show()
+    model = Model(api_key)
+    view_model = ViewModel(model)
+    view = View(view_model)
+    view.show()
+
     sys.exit(app.exec_())
