@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import (
     QMainWindow,
-    QWidget,
     QLabel,
     QLineEdit,
     QPushButton,
@@ -23,18 +22,21 @@ class View(QMainWindow):
     def initUI(self):
         self.setWindowTitle("Weather Forecast App")
         self.setWindowIcon(QIcon("images/app_icon.png"))
-
         self.resize(600, 400)
 
-        left_frame = QFrame()
-        left_layout = QVBoxLayout()
-        left_frame.setLayout(left_layout)
+        main_frame = QFrame()
+        main_layout = QVBoxLayout()
+        main_frame.setLayout(main_layout)
 
+        city_container = QHBoxLayout()
         city_label = QLabel("Enter the city:")
         self.city_entry = QLineEdit()
-        left_layout.addWidget(city_label)
-        left_layout.addWidget(self.city_entry)
+        city_container.addWidget(city_label)
+        city_container.addWidget(self.city_entry)
 
+        main_layout.addLayout(city_container)
+
+        button_container = QHBoxLayout()
         buttons = [
             ("Current conditions", forecast_options.CURRENT_CONDITIONS),
             ("12 hours", forecast_options.HOURLY_FORECAST),
@@ -46,28 +48,15 @@ class View(QMainWindow):
             button.clicked.connect(
                 lambda _, option=forecast_option: self.fetch_conditions(option)
             )
-            left_layout.addWidget(button)
+            button_container.addWidget(button)
 
-        left_layout.addStretch()
+        main_layout.addLayout(button_container)
 
-        right_frame = QFrame()
-        right_layout = QVBoxLayout()
-        right_frame.setLayout(right_layout)
-
-        weather_display_label = QLabel("Weather Information:")
         self.weather_display = QTextEdit()
         self.weather_display.setReadOnly(True)
+        main_layout.addWidget(self.weather_display)
 
-        right_layout.addWidget(weather_display_label)
-        right_layout.addWidget(self.weather_display)
-
-        main_layout = QHBoxLayout()
-        main_layout.addWidget(left_frame)
-        main_layout.addWidget(right_frame)
-
-        central_widget = QWidget()
-        central_widget.setLayout(main_layout)
-        self.setCentralWidget(central_widget)
+        self.setCentralWidget(main_frame)
 
     def fetch_conditions(self, forecast_type):
         city = self.city_entry.text()
