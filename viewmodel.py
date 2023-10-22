@@ -1,21 +1,27 @@
 from model import Model
 import forecast_options
 from datetime import datetime
+from PyQt5.QtCore import QObject, pyqtSignal
 
 
-class ViewModel:
+class ViewModel(QObject):
+    data_updated = pyqtSignal(str)
+
     def __init__(self, model: Model):
+        super().__init__()
         self.model = model
 
     def fetch_weather_conditions(self, city, forecast_option):
         self.model.fetch_weather_conditions(city, forecast_option)
         data = self.model.get_weather_data()
-        return self.format_weather_data(data, city, forecast_option)
+        data_formatted = self.format_weather_data(data, city, forecast_option)
+        self.data_updated.emit(data_formatted)
 
     def format_weather_data(self, data, city, forecast_option):
+        info = ""
         if data:
             if forecast_option == forecast_options.CURRENT_CONDITIONS:
-                return (
+                info = (
                     f"Current weather conditions for {city}:\n\n"
                     f"Temperature: {data[0]['Temperature']['Metric']['Value']}°C\n"
                     f"Real Feel: {data[0]['RealFeelTemperature']['Metric']['Value']}°C\n"
@@ -32,9 +38,8 @@ class ViewModel:
                         f"Wind: {hourly_forecast['Wind']['Speed']['Value']} km/h, {hourly_forecast['Wind']['Direction']['Localized']}\n"
                         f"Rain Probability: {hourly_forecast['RainProbability']}%\n\n"
                     )
-                return info
             elif forecast_option == forecast_options.ONE_DAY_FORECAST:
-                return (
+                info = (
                     f"Weather forecast for tomorrow for {city}:\n\n"
                     f"Minimum Temperature: {data['DailyForecasts'][0]['Temperature']['Minimum']['Value']}°C\n"
                     f"Maximum Temperature: {data['DailyForecasts'][0]['Temperature']['Maximum']['Value']}°C\n"
@@ -51,6 +56,6 @@ class ViewModel:
                         f"Day: {day_forecast['Day']['IconPhrase']}\n"
                         f"Night: {day_forecast['Night']['IconPhrase']}\n\n"
                     )
-                return info
             else:
                 raise ValueError("Invalid forecast option.")
+        return info

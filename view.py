@@ -18,6 +18,7 @@ class View(QMainWindow):
         super().__init__()
         self.view_model = view_model
         self.initUI()
+        self.view_model.data_updated.connect(self.update_weather_info)
 
     def initUI(self):
         self.setWindowTitle("Weather Forecast App")
@@ -60,8 +61,7 @@ class View(QMainWindow):
 
     def fetch_conditions(self, forecast_type):
         city = self.city_entry.text()
-        weather_info = self.view_model.fetch_weather_conditions(city, forecast_type)
-        self.update_weather_info(weather_info)
+        self.view_model.fetch_weather_conditions(city, forecast_type)
 
     def update_weather_info(self, weather_info):
         self.weather_display.setPlainText(weather_info)
