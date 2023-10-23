@@ -7,10 +7,14 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QFrame,
     QTextEdit,
+    QCompleter,
+    QMessageBox,
 )
 from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt
 from viewmodel import ViewModel
 import forecast_options
+import cities
 
 
 class View(QMainWindow):
@@ -37,6 +41,11 @@ class View(QMainWindow):
 
         main_layout.addLayout(city_container)
 
+        city_names = cities.load_city_names()
+        completer = QCompleter(city_names, self)
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        self.city_entry.setCompleter(completer)
+
         button_container = QHBoxLayout()
         buttons = [
             ("Current conditions", forecast_options.CURRENT_CONDITIONS),
@@ -61,7 +70,10 @@ class View(QMainWindow):
 
     def fetch_conditions(self, forecast_type):
         city = self.city_entry.text()
-        self.view_model.fetch_weather_conditions(city, forecast_type)
+        try:
+            self.view_model.fetch_weather_conditions(city, forecast_type)
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error: {str(e)}")
 
     def update_weather_info(self, weather_info):
         self.weather_display.setPlainText(weather_info)
